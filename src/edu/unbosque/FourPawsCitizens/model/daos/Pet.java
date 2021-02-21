@@ -6,9 +6,9 @@ public class Pet {
     String species;
     String sex;
     String size;
-    String potentDanger;
+    boolean potentDanger;
     String neighborhood;
-    public void Pet(String ID, long micro, String Sp, String Sex, String Size, String PotentD, String NeighborH){
+    public Pet(String ID, long micro, String Sp, String Sex, String Size, boolean PotentD, String NeighborH){
         id = ID;
         microchip = micro;
         sex = Sex;
