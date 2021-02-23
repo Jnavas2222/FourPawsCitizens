@@ -1,4 +1,4 @@
-package edu.unbosque.FourPawsCitizens.model.daos;
+package edu.unbosque.FourPawsCitizens.model.dtos;
 
 public class Pet {
     String id;

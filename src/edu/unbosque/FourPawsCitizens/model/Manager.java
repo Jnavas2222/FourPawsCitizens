@@ -1,4 +1,6 @@
-package edu.unbosque.FourPawsCitizens.model.daos;
+package edu.unbosque.FourPawsCitizens.model;
+
+import edu.unbosque.FourPawsCitizens.model.dtos.Pet;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,17 +17,61 @@ public class Manager {
             
         }
         catch (Exception e){
-            System.out.println("Error");
+            e.printStackTrace();
+            System.out.println("Información no detectada");
         }
     }
     public void funcionar() throws IOException {
     	Pets = new ArrayList<Pet>();
+    	Imprimir("Bienvenido al administrador de información de mascotas");
         uploadData();
-        assignID();
-        findByMultipleFields("CANINO","HEMBRA","MINIATURA","NO");
+        intro();
     }
-    
+
+    public void intro(){
+        Imprimir("Ques es lo que quieres hacer: "+"\n"+
+                "1 para asignar id"+"\n"+
+                "2 para encontrar por microchip"+"\n"+
+                "3 para contar por especie"+"\n"+
+                "4 para encontrar masoctas peligrosas por barrio"+"\n"+
+                "5 para buscar por diferentes factores"+"\n"+
+                "6 para salir"+"\n");
+        int n = Integer.parseInt(Recolectar());
+        menu(n);
+    }
+
     BufferedReader Br = null;
+    public void menu(int n){
+    if(n == 1){
+       assignID();
+    }
+    else if(n == 2){
+        Imprimir("¿Cual es el microchip que quieres buscar?");
+        long busc = Long.parseLong(Recolectar());
+        findByMicrochip(busc);
+        intro();
+    }
+    else if(n == 3){
+        Imprimir("Cual es la especie que quieres buscar");
+        countBySpecies(Recolectar());
+        intro();
+    }
+    else if(n == 4){
+        Imprimir("Escribe se parando por , de la siguiente forma: número_de_mascotas,Top/last,barrio");
+        String [] aux = Recolectar().split(",");
+        findByPotentDangerousInNeighborhood(Integer.parseInt(aux[0]),aux[1],aux[2]);
+        intro();
+    }
+    else if(n == 5){
+        Imprimir("Escribe se parando por , de la siguiente forma: tamaño,sexo,barrio,es_peligroso(si/no)");
+        String [] aux = Recolectar().split(",");
+        findByMultipleFields(aux[0],aux[1],aux[2],aux[3]);
+        intro();
+    }
+    else if(n == 6) {
+        Imprimir("Gracias por usar el sistema");
+    }
+    }
 
     public void uploadData() throws IOException {
         try {
@@ -37,9 +83,12 @@ public class Manager {
                 try {
                     String[] split = line.split(";");
                     Long aux = Long.parseLong(split[0]);
-                    Boolean aux2 = false;
-                    if(split[4]=="SI"){
+                    Boolean aux2 = null;
+                    if(split[4].equals("SI")){
                         aux2 = true;
+                    }
+                    else if(split[4].equals("NO")){
+                        aux2 = false;
                     }
                     Pets.add(new Pet("NO-ID",aux,split[1],split[2],split[3],aux2,split[5]));
                 }
@@ -132,15 +181,15 @@ public class Manager {
             int j = 0;
             int i = 0;
             while(j < n){
-                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())) {
-                    Imprimir("ID: " + Pets.get(i).getId() + "\n" +
-                            "Species: " + Pets.get(i).getSpecies() + "\n" +
-                            "Gender: " + Pets.get(i).getSex() + "\n" +
-                            "Size: " + Pets.get(i).getSize() + "\n" +
-                            "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
-                            "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
-                    j++;
-                    }
+                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())&&Pets.get(i).isPotentDanger()==true) {
+                        Imprimir("ID: " + Pets.get(i).getId() + "\n" +
+                                "Species: " + Pets.get(i).getSpecies() + "\n" +
+                                "Gender: " + Pets.get(i).getSex() + "\n" +
+                                "Size: " + Pets.get(i).getSize() + "\n" +
+                                "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
+                                "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
+                        j++;
+                }
                 i++;
                 }
             }
@@ -148,7 +197,7 @@ public class Manager {
             int j = 0;
             int i = Pets.size()-1;
             while(j < n){
-                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())) {
+                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood()) && Pets.get(i).isPotentDanger()) {
                     Imprimir("ID: " + Pets.get(i).getId() + "\n" +
                             "Species: " + Pets.get(i).getSpecies() + "\n" +
                             "Gender: " + Pets.get(i).getSex() + "\n" +
@@ -177,12 +226,6 @@ public class Manager {
     public String Recolectar(){
         Scanner scan=new Scanner(System.in);
         String aux=scan.next();
-        return aux;
-    }
-
-        public int RecolectarNum(){
-        Scanner scan=new Scanner(System.in);
-        int aux = scan.nextInt();
         return aux;
     }
 

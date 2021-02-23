@@ -1,6 +1,6 @@
-package edu.unbosque.FourPawsCitizens.model;
+package edu.unbosque.FourPawsCitizens;
 
-import edu.unbosque.FourPawsCitizens.model.daos.Manager;
+import edu.unbosque.FourPawsCitizens.model.Manager;
 
 public class Main {
 	public static void main(String[] args) {
