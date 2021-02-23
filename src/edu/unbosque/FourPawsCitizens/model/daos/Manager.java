@@ -4,21 +4,27 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class Manager {
+    private ArrayList<Pet> Pets;
     public Manager(){
         try {
             funcionar();
+            
         }
         catch (Exception e){
-
+            System.out.println("Error");
         }
     }
     public void funcionar() throws IOException {
+    	Pets = new ArrayList<Pet>();
         uploadData();
+        assignID();
+        findByMultipleFields("CANINO","HEMBRA","MINIATURA","NO");
     }
-
-    ArrayList Pets = new ArrayList<Pet>();
+    
     BufferedReader Br = null;
 
     public void uploadData() throws IOException {
@@ -35,10 +41,9 @@ public class Manager {
                     if(split[4]=="SI"){
                         aux2 = true;
                     }
-                    Pets.add(new Pet("",aux,split[1],split[2],split[3],aux2,split[5]));
+                    Pets.add(new Pet("NO-ID",aux,split[1],split[2],split[3],aux2,split[5]));
                 }
                 catch (Exception e) {
-                    System.out.println("Error, The neighborhood is not defined");
                         }
                     }
                 count++;
@@ -54,22 +59,134 @@ public class Manager {
     }
 
     public void assignID() {
+    for(int i = 0;i<Pets.size();i++){
+        String mi = String.valueOf(Pets.get(i).getMicrochip());
+        String sp = "";
+        String sx = "";
+        String sz = "";
+        String dang = "";
+        if(Pets.get(i).getSpecies().equals("CANINO")){
+            sp = "C";
+        }
+        else if(Pets.get(i).getSpecies().equals("FELINO")){
+            sp = "F";
+        }
 
+        if(Pets.get(i).getSex().equals("MACHO")){
+            sx = "M";
+        }
+        else if(Pets.get(i).getSex().equals("HEMBRA")){
+            sx = "H";
+        }
+
+        if(Pets.get(i).getSize().equals("MINIATURA")) {
+            sz = "MI";
+        }
+        else if(Pets.get(i).getSize().equals("PEQUE�O")){
+            sz = "P";
+        }
+        else if(Pets.get(i).getSize().equals("MEDIANO")){
+            sz = "M";
+        }
+        else if(Pets.get(i).getSize().equals("GRANDE")){
+            sz = "G";
+        }
+
+        if(Pets.get(i).isPotentDanger() == false){
+            dang = "F";
+        }
+        else if(Pets.get(i).isPotentDanger() == true){
+            dang = "T";
+        }
+
+        Pets.get(i).setId(mi.substring(mi.length()-4)+"-"+sp+sx+sz+dang+"-"+Pets.get(i).getNeighborhood());
+    }
     }
 
     public void findByMicrochip(long microchip) {
-
+        for(int i = 0;i<Pets.size();i++){
+            if(microchip == Pets.get(i).getMicrochip()){
+                Imprimir("ID: "+Pets.get(i).getId()+"\n"+
+                        "Species: "+Pets.get(i).getSpecies()+"\n"+
+                        "Gender: "+Pets.get(i).getSex()+"\n"+
+                        "Size: "+Pets.get(i).getSize()+"\n"+
+                        "Potentially Dangerous: "+Pets.get(i).isPotentDanger()+"\n"+
+                        "Neighborhood: "+Pets.get(i).getNeighborhood()+"\n");
+            }
+        }
     }
 
     public void countBySpecies(String species) {
-
+        int cont = 0;
+        String sp = species.toUpperCase();
+        for(int i = 0;i<Pets.size();i++){
+            if(sp.equals(Pets.get(i).getSpecies()) == true){
+                cont++;
+            }
+        }
+        Imprimir("El número de animales de la clase "+species.toUpperCase(Locale.ROOT)+" es: "+cont);
     }
 
     public void findByPotentDangerousInNeighborhood(int n, String position, String neighborhood) {
-
+        if(position.toUpperCase().equals("TOP")){
+            int j = 0;
+            int i = 0;
+            while(j < n){
+                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())) {
+                    Imprimir("ID: " + Pets.get(i).getId() + "\n" +
+                            "Species: " + Pets.get(i).getSpecies() + "\n" +
+                            "Gender: " + Pets.get(i).getSex() + "\n" +
+                            "Size: " + Pets.get(i).getSize() + "\n" +
+                            "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
+                            "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
+                    j++;
+                    }
+                i++;
+                }
+            }
+        else if(position.toUpperCase().equals("LAST")){
+            int j = 0;
+            int i = Pets.size()-1;
+            while(j < n){
+                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())) {
+                    Imprimir("ID: " + Pets.get(i).getId() + "\n" +
+                            "Species: " + Pets.get(i).getSpecies() + "\n" +
+                            "Gender: " + Pets.get(i).getSex() + "\n" +
+                            "Size: " + Pets.get(i).getSize() + "\n" +
+                            "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
+                            "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
+                    j++;
+                }
+                i--;
+            }
+        }
     }
 
-    public void findByMultipleFields(String sex, String species, String size, String potentDangerous) {
+    public void findByMultipleFields(String species, String sex, String size, String potentDangerous) {
+        boolean potent = false;
+        if (potentDangerous.toUpperCase().equals("SI")){
+            potent = true;
+        }
+        for(int i = 0; i<Pets.size();i++){
+            if(Pets.get(i).getSex().equals(sex)&&Pets.get(i).getSpecies().equals(species)&&Pets.get(i).getSize().equals(size)&&Pets.get(i).isPotentDanger() == potent){
+                Imprimir(Pets.get(i).getId());
+            }
+        }
+    }
 
+    public String Recolectar(){
+        Scanner scan=new Scanner(System.in);
+        String aux=scan.next();
+        return aux;
+    }
+
+        public int RecolectarNum(){
+        Scanner scan=new Scanner(System.in);
+        int aux = scan.nextInt();
+        return aux;
+    }
+
+    public void Imprimir(String aux){
+        System.out.println(aux);
     }
 }
