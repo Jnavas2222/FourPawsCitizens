@@ -44,6 +44,7 @@ public class Manager {
     public void menu(int n){
     if(n == 1){
        assignID();
+       intro();
     }
     else if(n == 2){
         Imprimir("¿Cual es el microchip que quieres buscar?");
@@ -162,6 +163,9 @@ public class Manager {
                         "Potentially Dangerous: "+Pets.get(i).isPotentDanger()+"\n"+
                         "Neighborhood: "+Pets.get(i).getNeighborhood()+"\n");
             }
+            else{
+                Imprimir("No se enontraron cincidencias");
+            }
         }
     }
 
@@ -177,11 +181,12 @@ public class Manager {
     }
 
     public void findByPotentDangerousInNeighborhood(int n, String position, String neighborhood) {
-        if(position.toUpperCase().equals("TOP")){
-            int j = 0;
-            int i = 0;
-            while(j < n){
-                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood())&&Pets.get(i).isPotentDanger()==true) {
+        try {
+            if (position.toUpperCase().equals("TOP")) {
+                int j = 0;
+                int i = 0;
+                while (j < n) {
+                    if (neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood()) && Pets.get(i).isPotentDanger() == true) {
                         Imprimir("ID: " + Pets.get(i).getId() + "\n" +
                                 "Species: " + Pets.get(i).getSpecies() + "\n" +
                                 "Gender: " + Pets.get(i).getSex() + "\n" +
@@ -189,25 +194,29 @@ public class Manager {
                                 "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
                                 "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
                         j++;
+                    }
+                    i++;
                 }
-                i++;
+            } else if (position.toUpperCase().equals("LAST")) {
+                int j = 0;
+                int i = Pets.size() - 1;
+                while (j < n) {
+                    if (neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood()) && Pets.get(i).isPotentDanger()) {
+                        Imprimir("ID: " + Pets.get(i).getId() + "\n" +
+                                "Species: " + Pets.get(i).getSpecies() + "\n" +
+                                "Gender: " + Pets.get(i).getSex() + "\n" +
+                                "Size: " + Pets.get(i).getSize() + "\n" +
+                                "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
+                                "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
+                        j++;
+                    }
+                    i--;
                 }
             }
-        else if(position.toUpperCase().equals("LAST")){
-            int j = 0;
-            int i = Pets.size()-1;
-            while(j < n){
-                if(neighborhood.toUpperCase().equals(Pets.get(i).getNeighborhood()) && Pets.get(i).isPotentDanger()) {
-                    Imprimir("ID: " + Pets.get(i).getId() + "\n" +
-                            "Species: " + Pets.get(i).getSpecies() + "\n" +
-                            "Gender: " + Pets.get(i).getSex() + "\n" +
-                            "Size: " + Pets.get(i).getSize() + "\n" +
-                            "Potentially Dangerous: " + Pets.get(i).isPotentDanger() + "\n" +
-                            "Neighborhood: " + Pets.get(i).getNeighborhood() + "\n");
-                    j++;
-                }
-                i--;
-            }
+        }
+        catch(Exception e){
+            Imprimir("No se encontro ninguna coincidencia");
+            intro();
         }
     }
 
